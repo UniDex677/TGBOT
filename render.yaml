@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: glint-telegram-game
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: glint-game
+    buildCommand: >-
+      node -e "const fs=require('fs'),z=require('zlib'),cp=require('child_process');fs.writeFileSync('/tmp/glint.tar',z.brotliDecompressSync(Buffer.from(fs.readFileSync('glint-source.tar.br.b64','utf8'),'base64')));cp.execFileSync('tar',['-xf','/tmp/glint.tar']);" && npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PUBLIC_URL
+        value: https://glint-telegram-game.onrender.com
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: DATABASE_URL
+        sync: false
